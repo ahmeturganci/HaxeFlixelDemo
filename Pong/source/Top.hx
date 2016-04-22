@@ -7,12 +7,14 @@ import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 
 class Top extends FlxSprite{
-public var timer:FlxTimer;
+	public var timer:FlxTimer;
 	public function  new (X,Y)
 	{
 		super(X,Y);
-		 
-		velocity.x=150;
+		
+		this.velocity.x=150;
+		this.velocity.y=150;
+
 		elasticity=1;
 	}
 	override public function update(elapsed:Float):Void
@@ -21,7 +23,7 @@ public var timer:FlxTimer;
 		if (y<0) {
 			velocity.y*=-1;
 		}
-			if (y+height<FlxG.height) {
+		if (y+height<this.height) {
 			velocity.y*=-1;
 
 		}
@@ -30,11 +32,11 @@ public var timer:FlxTimer;
 		x=FlxG.width/2;
 		y=FlxG.height/2;
 		velocity.set();
-			new FlxTimer().start(1, myCallback);
+		new FlxTimer().start(1, myCallback);
 		
 	}
 	private function myCallback(Timer:FlxTimer):Void
-{
-	velocity.x=160;
-}
+	{
+		velocity.x=160;
+	}
 }

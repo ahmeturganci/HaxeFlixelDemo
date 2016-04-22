@@ -16,11 +16,12 @@ class PlayState extends FlxState
 	var top:Top;
 	var cubuklar:FlxGroup = new FlxGroup();
 	var sagPuan=0;
-	var  solPuan = 0;
+	var solPuan = 0;
 	var puan:FlxText;
 	var arkaPlan:FlxSprite;
 	var kazanan:FlxText;
 	var maksimumPuan=3;
+
 	override public function create():Void
 	{
 		super.create();
@@ -29,12 +30,12 @@ class PlayState extends FlxState
 		arkaPlan.makeGraphic(FlxG.width,FlxG.height,FlxColor.WHITE);
 		arkaPlan.color=FlxColor.BLACK;
 		add(arkaPlan);
-	    
-	    puan=new FlxText(0,0,FlxG.width,"0|0");
+		
+		puan=new FlxText(0,0,FlxG.width,"0|0");
 		puan.setFormat(null,23,FlxColor.RED,"center");
 		add(puan);
 
-		 kazanan=new FlxText(0,FlxG.height/2,FlxG.width,"KAZANDIN");
+		kazanan=new FlxText(0,FlxG.height/2,FlxG.width,"KAZANDIN");
 		kazanan.setFormat(null,23,FlxColor.RED,"center");
 		kazanan.visible=false;
 		add(kazanan);
@@ -49,45 +50,52 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		
 		FlxG.collide(top,cubuklar,function(top:FlxSprite,cubuklar:FlxSprite){
 			top.velocity.y=(top.getGraphicMidpoint().y - cubuklar.getGraphicMidpoint().y)*2;
 			FlxG.camera.shake(0.01,0.1);			
 			FlxG.sound.play("assets/sounds/pop.wav");
 		});
+
+		
 		if (top.x<0) {
 			sagPuan++;
-     	top.sifirlaTop();
-     	puan.text=solPuan+"|"+sagPuan;
-     	
-     		if (sagPuan==maksimumPuan) {
-     		puan.visible=false;
-     		kazanan.visible=true;
-     		kazanan.text="SAĞ TARAF KAZANDI";
-     		
-     		new FlxTimer().start(5,myCallback);
-     		}
+			top.sifirlaTop();
+			puan.text=solPuan+"|"+sagPuan;
+			
+			if (sagPuan==maksimumPuan) {
+				puan.visible=false;
+				kazanan.visible=true;
+				kazanan.text="SAĞ TARAF KAZANDI";
+				new FlxTimer().start(5,myCallback);
+			}
 		}
 
 		if (top.x+top.width>FlxG.width){
 			solPuan++;
-     	top.sifirlaTop();
-     	puan.text=solPuan+"|"+sagPuan;
+			top.sifirlaTop();
+			puan.text=solPuan+"|"+sagPuan;
 			if (solPuan==maksimumPuan) {
-     		puan.visible=false;
-     		kazanan.visible=true;
-     		kazanan.text="SOL TARAF KAZANDI";
-     		
-     		new FlxTimer().start(5, myCallback);
-	}
-	
-
-
-     	}
-
+				puan.visible=false;
+				kazanan.visible=true;
+				kazanan.text="SOL TARAF KAZANDI";				
+				new FlxTimer().start(5, myCallback);
+			}
 		}
-		private function myCallback(Timer:FlxTimer):Void
-		{
+		if (top.y<0) {
+			top.y=0;
+			geriKuvvet();
+		}
+		
+
+
+	}
+	private function myCallback(Timer:FlxTimer):Void
+	{
 		FlxG.resetGame();
-		}
 	}
+	private function geriKuvvet():Void{
+		top.velocity.y=150;
+	}
+}
 
