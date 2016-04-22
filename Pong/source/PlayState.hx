@@ -32,11 +32,11 @@ class PlayState extends FlxState
 		add(arkaPlan);
 		
 		puan=new FlxText(0,0,FlxG.width,"0|0");
-		puan.setFormat(null,23,FlxColor.RED,"center");
+		puan.setFormat(null,23,FlxColor.BLUE,"center");
 		add(puan);
-
+			
 		kazanan=new FlxText(0,FlxG.height/2,FlxG.width,"KAZANDIN");
-		kazanan.setFormat(null,23,FlxColor.RED,"center");
+		kazanan.setFormat(null,23,FlxColor.YELLOW,"center");
 		kazanan.visible=false;
 		add(kazanan);
 

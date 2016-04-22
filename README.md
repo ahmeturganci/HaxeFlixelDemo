@@ -1,1 +1,1 @@
-HaxeFlixelDemo kütüphanesini öğrenme amacı ile yapılan projeleri içermektedir.
+﻿Flixel kütüphanesini öğrenme amacı ile yapılan projeleri çalışmaları.
