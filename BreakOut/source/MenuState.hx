@@ -30,7 +30,7 @@ class MenuState extends FlxState
 		_btnCikis.y = FlxG.height / 2 - _btnCikis.height / 2;
 		add(_btnCikis);
 
-		_yapimci=new FlxText(0, 440, 0, "AU-GAME", 14);
+		_yapimci=new FlxText(0, 440, 0, "AU", 14);
 		_yapimci.alignment = FlxTextAlign.CENTER;
 		_yapimci.screenCenter(FlxAxes.X);
 		add(_yapimci);
