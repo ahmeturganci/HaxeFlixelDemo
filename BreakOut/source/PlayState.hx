@@ -1,107 +1,176 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.text.FlxText;
-import flixel.ui.FlxButton;
-import flixel.math.FlxMath;
-import flixel.util.FlxColor;
-import flixel.util.FlxAxes;
-import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup;
+import flixel.util.FlxColor;
+import flixel.math.FlxRandom;
 
 class PlayState extends FlxState
 {
-	var cubuk:FlxSprite;
-	var top:FlxSprite;
-	var duvarlar:FlxGroup;
-	var sagDuvar:FlxSprite;
-	var solDuvar:FlxSprite;
-	var altDuvar:FlxSprite;
-	var ustDuvar:FlxSprite;
-	var tugla:FlxGroup;
-
+	private static inline var BAT_SPEED:Int = 350;
+	
+	private var cubuk:FlxSprite;
+	private var top:FlxSprite;
+	
+	private var duvarlar:FlxGroup;
+	private var solDuvar:FlxSprite;
+	private var sagDuvar:FlxSprite;
+	private var altDuvar:FlxSprite;
+	private var ustDuvar:FlxSprite;
+	
+	private var tuglalar:FlxGroup;
+	
 	override public function create():Void
 	{
-		super.create();
-
-		FlxG.mouse.visible=false;
+		FlxG.mouse.visible = false;
 		
 		cubuk = new FlxSprite(180, 220);
-		cubuk.makeGraphic(40, 6, FlxColor.CYAN);
+		cubuk.makeGraphic(40, 6, FlxColor.MAGENTA);
 		cubuk.immovable = true;
-
-		top= new FlxSprite(180,160);
-		top.makeGraphic(6,6,FlxColor.RED);
+		
+		top = new FlxSprite(180, 160);
+		top.makeGraphic(6, 6, FlxColor.MAGENTA);
+		
 		top.elasticity = 1;
 		top.maxVelocity.set(200, 200);
 		top.velocity.y = 200;
-
-		duvarlar= new FlxGroup();
-
-		solDuvar= new FlxSprite(0,0);
-		solDuvar.makeGraphic(10,240,FlxColor.WHITE);
-		solDuvar.immovable=true;
+		
+		duvarlar = new FlxGroup();
+		
+		solDuvar = new FlxSprite(0, 0);
+		solDuvar.makeGraphic(10, 240, FlxColor.GRAY);
+		solDuvar.immovable = true;
 		duvarlar.add(solDuvar);
 		
-		sagDuvar= new FlxSprite(310,0);
-		sagDuvar.makeGraphic(10,240,FlxColor.WHITE);
-		sagDuvar.immovable=true;
+		sagDuvar = new FlxSprite(310, 0);
+		sagDuvar.makeGraphic(10, 240, FlxColor.GRAY);
+		sagDuvar.immovable = true;
 		duvarlar.add(sagDuvar);
-
-		ustDuvar = new FlxSprite(0, 239);
-		ustDuvar.makeGraphic(320,10,FlxColor.WHITE);
-		ustDuvar.immovable=true;
-		duvarlar.add(ustDuvar);
-
-		altDuvar = new FlxSprite(0,0);
-		altDuvar.makeGraphic(10,240,FlxColor.TRANSPARENT);
-		altDuvar.immovable=true;
-		duvarlar.add(altDuvar);
-
 		
-
-		tugla = new FlxGroup();
-		var tx:Int=10;
-		var ty:Int=30;
-		var tuglaRenk:Array<Int>=[FlxColor.RED,FlxColor.BLUE,FlxColor.GRAY,FlxColor.GREEN,FlxColor.YELLOW,FlxColor.MAGENTA];
-
-		for (i in 0 ... 6) 
+		ustDuvar = new FlxSprite(0, 0);
+		ustDuvar.makeGraphic(320, 10, FlxColor.GRAY);
+		ustDuvar.immovable = true;
+		duvarlar.add(ustDuvar);
+		
+		altDuvar = new FlxSprite(0, 239);
+		altDuvar.makeGraphic(320, 10, FlxColor.TRANSPARENT);
+		altDuvar.immovable = true;
+		duvarlar.add(altDuvar);
+		
+		
+		tuglalar = new FlxGroup();
+		
+		var bx:Int = 10;
+		var by:Int = 30;
+		
+		var tuglaRengi:Array<Int> = [0xffd03ad1, 0xfff75352, 0xfffd8014, 0xffff9024, 0xff05b320, 0xff6d65f6];
+		
+		for (y in 0...6)
 		{
-			for (j in 0 ... 20) 
+			for (x in 0...20)
 			{
-				var geciciTugla:FlxSprite = new FlxSprite(tx, ty);
-				geciciTugla.makeGraphic(15, 15, tuglaRenk[j]);
+				var geciciTugla:FlxSprite = new FlxSprite(bx, by);
+				geciciTugla.makeGraphic(15, 15, tuglaRengi[y]);
 				geciciTugla.immovable = true;
-				tugla.add(geciciTugla);
-				tx += 15;
+				tuglalar.add(geciciTugla);
+				bx += 15;
 			}
-			tx=10;
-			ty+=15;
+			
+			bx = 10;
+			by += 15;
 		}
-
-
+		
+		add(duvarlar);
 		add(cubuk);
 		add(top);
-		add(duvarlar);
-		add(tugla);
-
+		add(tuglalar);
 	}
-
+	
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-
-		cubuk.velocity.x=-0;
-		if (FlxG.keys.anyPressed([LEFT]) && cubuk.x >0)
+		
+		cubuk.velocity.x = 0;
+		
+		#if !FLX_NO_TOUCH
+		for (touch in FlxG.touches.list)
 		{
-			cubuk.velocity.x=-300;
+			if (touch.pressed)
+			{
+				if (touch.x > 10 && touch.x < 270)
+				cubuk.x = touch.x;
+			}
 		}
-		else if(FlxG.keys.anyPressed([RIGHT]) && cubuk.x<270)
+		for (swipe in FlxG.swipes)
 		{
-			cubuk.velocity.x=300;
+			if (swipe.distance > 100)
+			{
+				if ((swipe.angle < 10 && swipe.angle > -10) || (swipe.angle > 170 || swipe.angle < -170))
+				{
+					FlxG.resetState();
+				}
+			}
 		}
-		FlxG.collide(cubuk,top);
+		#end
+		
+		if (FlxG.keys.anyPressed([LEFT, A]) && cubuk.x > 10)
+		{
+			cubuk.velocity.x = - BAT_SPEED;
+		}
+		else if (FlxG.keys.anyPressed([RIGHT, D]) && cubuk.x < 270)
+		{
+			cubuk.velocity.x = BAT_SPEED;
+		}
+		
+		if (FlxG.keys.justReleased.R)
+		{
+			FlxG.resetState();
+		}
+		
+		if (cubuk.x < 10)
+		{
+			cubuk.x = 10;
+		}
+		
+		if (cubuk.x > 270)
+		{
+			cubuk.x = 270;
+		}
+		
+		FlxG.collide(top, duvarlar);
+		FlxG.collide(cubuk, top, ping);
+		FlxG.collide(top, tuglalar, hit);
+	}
+	
+	private function hit(Ball:FlxObject, Brick:FlxObject):Void
+	{
+		Brick.exists = false;
+	}
+	
+	private function ping(Bat:FlxObject, Ball:FlxObject):Void
+	{
+		var batmid:Int = Std.int(Bat.x) + 20;
+		var ballmid:Int = Std.int(Ball.x) + 3;
+		var diff:Int;
+		
+		if (ballmid < batmid)
+		{
+			diff = batmid - ballmid;
+			Ball.velocity.x = ( -10 * diff);
+		}
+		else if (ballmid > batmid)
+		{
+			
+			diff = ballmid - batmid;
+			Ball.velocity.x = (10 * diff);
+		}
+		else
+		{
+			//şıçrama olayı 
+			Ball.velocity.x = 2 + FlxG.random.int(0, 8);
+		}
 	}
 }
